@@ -94,7 +94,7 @@ resolve_fnpack() {
     FNPACK=/path/to/fnpack bash fnos/build-fpk.sh"
   fi
   local url="https://static2.fnnas.com/fnpack/fnpack-$FNPACK_VER-$OS_TAG-$ARCH_TAG"
-  c_warn "  未找到 fnpack，从官方源下载（$FPK_VER $OS_TAG/$ARCH_TAG，约 4MB）"
+  c_warn "  未找到 fnpack，从官方源下载（v$FNPACK_VER $OS_TAG/$ARCH_TAG，约 4MB）"
   mkdir -p "$TOOLS_DIR"
   if command -v curl >/dev/null 2>&1; then
     curl -fL --retry 2 -m 180 -o "$FPK_CACHE" "$url" || die "fnpack 下载失败：$url"
