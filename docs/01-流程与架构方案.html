@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>太乙 TEY · 前台 UI 重构与前后端分离方案（第一阶段：流程）</title>
+<style>
+  :root{
+    --bg:#F5F7FA; --card:#FFFFFF; --ink:#14181F; --ink2:#48505C; --ink3:#7C8798;
+    --line:#E3E8EF; --accent:#0E9F8E; --accent-soft:#E6F6F3; --warn:#C2410C;
+    --warn-soft:#FFF4ED; --blue:#2563EB; --blue-soft:#EFF4FF;
+    --mono:ui-monospace,"SFMono-Regular","Cascadia Mono",Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+    font-size:14.5px;line-height:1.72;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:56px 32px 96px}
+  header.hero{background:linear-gradient(135deg,#0F172A 0%,#123A3A 60%,#0E9F8E 140%);color:#fff;border-radius:18px;padding:44px 44px 38px;position:relative;overflow:hidden}
+  header.hero:after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.06)}
+  header.hero .kicker{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#7FE3D6;font-weight:600}
+  header.hero h1{margin:12px 0 10px;font-size:31px;line-height:1.3;font-weight:700;letter-spacing:-.3px}
+  header.hero p{margin:0;color:#C6D5D3;font-size:14.5px;max-width:74ch}
+  .metaline{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+  .pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:5px 13px;font-size:12.5px;color:#DDEBEA}
+  h2{font-size:20px;margin:52px 0 14px;padding-bottom:10px;border-bottom:1px solid var(--line);letter-spacing:-.2px}
+  h2 .n{display:inline-block;min-width:26px;height:26px;line-height:26px;text-align:center;background:var(--accent);color:#fff;border-radius:7px;font-size:13px;margin-right:10px;font-weight:600;vertical-align:2px}
+  h3{font-size:15.5px;margin:26px 0 10px;color:var(--ink)}
+  p{margin:10px 0;color:var(--ink2)}
+  ul,ol{margin:10px 0;padding-left:22px;color:var(--ink2)}
+  li{margin:5px 0}
+  code{font-family:var(--mono);background:#EEF1F5;padding:1.5px 6px;border-radius:5px;font-size:12.6px;color:#0B4F48}
+  table{width:100%;border-collapse:separate;border-spacing:0;margin:16px 0;font-size:13.4px;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th{background:#F0F3F7;text-align:left;padding:10px 12px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 12px;border-bottom:1px solid #F0F2F6;color:var(--ink2);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  td.ok{color:#0B7A6C;font-weight:600}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .card h4{margin:0 0 6px;font-size:13.5px;color:var(--ink)}
+  .card p{margin:0;font-size:13px;color:var(--ink3)}
+  .stat b{display:block;font-size:22px;color:var(--accent);line-height:1.3;letter-spacing:-.5px}
+  .callout{border-radius:10px;padding:14px 16px;margin:16px 0;font-size:13.6px;border:1px solid}
+  .callout.info{background:var(--blue-soft);border-color:#D3E1FF;color:#1E3A8A}
+  .callout.good{background:var(--accent-soft);border-color:#BFE8E2;color:#0A5C52}
+  .callout.warn{background:var(--warn-soft);border-color:#FFDCC8;color:#8A3A12}
+  .callout b{color:inherit}
+  .flow{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 20px;margin:18px 0}
+  .row{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+  .node{flex:1 1 0;min-width:132px;background:#F7F9FB;border:1px solid var(--line);border-radius:9px;padding:11px 12px;text-align:center;font-size:12.8px;color:var(--ink2)}
+  .node b{display:block;color:var(--ink);font-size:13px;margin-bottom:3px}
+  .node.hi{background:var(--accent-soft);border-color:#A9DDD4}
+  .node.new{background:#FFF9E8;border-color:#F0DFA8}
+  .arrow{align-self:center;color:#A8B3C2;font-size:17px;flex:0 0 auto}
+  .lane{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px dashed var(--line)}
+  .lane:last-child{border-bottom:0}
+  .lane .tag{flex:0 0 88px;font-size:12px;font-weight:600;color:var(--accent);padding-top:2px}
+  .lane .body{font-size:13.4px;color:var(--ink2)}
+  .small{font-size:12.6px;color:var(--ink3)}
+  .foot{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink3)}
+  .tagp{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:5px;margin-right:6px}
+  .p0{background:#FDECEC;color:#B42318}
+  .p1{background:#FFF3DC;color:#8A5A00}
+  .p2{background:#EDF0F4;color:#5A6472}
+  .mono{font-family:var(--mono);font-size:12.6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">Phase 1 / 流程与架构</div>
+  <h1>太乙 TEY 前台 UI 重构 —— 前后端分离方案</h1>
+  <p>目标：在<strong>不修改一行原有代码</strong>的前提下，为 NexusPHP 前台换上全新的现代化界面，功能一个不少，并且随时可一键回退到旧站。</p>
+  <div class="metaline">
+    <span class="pill">站点 http://192.168.1.10/</span>
+    <span class="pill">NexusPHP(Laravel 12)</span>
+    <span class="pill">554 种子 / 817 用户</span>
+    <span class="pill">162 个前台入口</span>
+    <span class="pill">PHP 8.2 + MySQL 8.4 + Redis</span>
+  </div>
+</header>
+
+<h2><span class="n">1</span>结论先说</h2>
+<div class="callout good">
+  <b>可以做，而且风险可控。</b>这套 NexusPHP 是 Laravel 架构，不是纯粹的远古 PHP 堆栈，改造条件比一般 PT 站好。推荐路径是：<b>新前端（独立部署）+ BFF 适配层（只读原站、代理写操作）</b>，原站目录挂载为<b>只读</b>，新旧两套并行，出问题把路由切回去即可，秒级回滚。
+</div>
+
+<div class="grid g4" style="margin-top:18px">
+  <div class="card stat"><b>162</b><p>前台 PHP 入口（页面 + 动作），功能清单已全部归档</p></div>
+  <div class="card stat"><b>0</b><p>需要改动的原有文件数量</p></div>
+  <div class="card stat"><b>1</b><p>新增边界：一个新容器 + 一条 openresty 路由</p></div>
+  <div class="card stat"><b>&lt;10s</b><p>回滚耗时（切路由，无数据迁移）</p></div>
+</div>
+
+<h2><span class="n">2</span>现状勘察</h2>
+<table>
+  <tr><th style="width:130px">项目</th><th>实况</th></tr>
+  <tr><td>程序</td><td><span class="mono">xiaomlove/nexusphp</span>（NexusPHP 的 Laravel 重构分支），composer 名 <span class="mono">xiaomlove/nexusphp</span></td></tr>
+  <tr><td>框架</td><td>Laravel 12 + Filament 5 + Livewire + Sanctum/Passport；前台仍是传统 <span class="mono">public/*.php</span> 直出 HTML</td></tr>
+  <tr><td>运行环境</td><td>1Panel + Docker：<span class="mono">NP</span>(php-fpm 8.2.35)、<span class="mono">openresty 1.31</span>、<span class="mono">mysql 8.4.13</span>、<span class="mono">redis 8.10</span>；站点根 <span class="mono">/opt/1panel/www/sites/192.168.1.10/index</span></td></tr>
+  <tr><td>后台管理</td><td>已是现代化面板，路径 <span class="mono">/nexusphp</span>（Filament，SPA，Amber 主题）<b>——本次不重做，直接复用</b></td></tr>
+  <tr><td>数据规模</td><td>种子 554（电影/剧集/纪录片/动画/MV/体育/无损音乐 等 7 大类 × 2 区）、用户 817、帖子 55、站内信 421、认领 1540、签到 733</td></tr>
+  <tr><td>现有视觉</td><td>经典 NexusPHP 深色主题（<span class="mono">styles/Tey</span>），表格 + 左侧栏，PC 优先，移动端体验弱</td></tr>
+  <tr><td>已有 JSON 接口</td><td><span class="mono">routes/api.php</span> 里保留了种子列表/详情/个人资料/评论/收藏等接口（Sanctum 鉴权），但登录接口是注释状态</td></tr>
+</table>
+
+<div class="callout warn">
+  <b>一个需要你确认的点：</b>管理员密码在你消息里被截断成了 <span class="mono">Xi....377</span>，我无法登录前台抓取登录后页面的真实截图。第一阶段方案不依赖它，但第二阶段（视觉稿）需要拿它做像素级比对。
+</div>
+
+<h2><span class="n">3</span>设计原则（决定成败的四条）</h2>
+<div class="grid g2">
+  <div class="card"><h4>① 原站只读</h4><p>原目录以 <span class="mono">:ro</span> 挂载给新服务，物理上杜绝“手滑改到老代码”。新代码全部放在独立目录 <span class="mono">/opt/1panel/www/sites/192.168.1.10/v2</span> 与独立容器里。</p></div>
+  <div class="card"><h4>② 双跑不切库</h4><p>不做数据迁移、不改表结构。新前端只“读”和“代理写”，任何时刻旧站单独也能跑。</p></div>
+  <div class="card"><h4>③ 功能对齐到入口级</h4><p>以 162 个 <span class="mono">.php</span> 入口为验收基线，每一个都要在新前端有明确归属（重做 / 保留跳转 / 后台面板承接），不允许“悄悄消失”。</p></div>
+  <div class="card"><h4>④ 路由可回滚</h4><p>新前端挂在 <span class="mono">/v2</span>（或独立端口），旧站首页不变。验收通过后再决定是否把 <span class="mono">/</span> 指向新版，回滚只需改一行 openresty 配置。</p></div>
+</div>
+
+<h2><span class="n">4</span>总体架构</h2>
+<div class="flow">
+  <div class="row">
+    <div class="node new"><b>新前端 SPA</b>Vue3 + Vite + TS<br><span class="small">静态构建，openresty 直出</span></div>
+    <div class="arrow">⇄</div>
+    <div class="node hi"><b>BFF 适配层</b>Node/Fastify<br><span class="small">会话守卫 + HTML→JSON</span></div>
+    <div class="arrow">⇄</div>
+    <div class="node"><b>原站 PHP</b>保持不变<br><span class="small">只读挂载，内部回环调用</span></div>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <div class="node" style="flex:1 1 40%"><b>MySQL 8.4</b>只读账号<span class="small">（可选，仅统计类聚合）</span></div>
+    <div class="node" style="flex:1 1 40%"><b>Redis</b>接口缓存 10–60s<span class="small">削峰，降低 PHP 压力</span></div>
+    <div class="node" style="flex:1 1 20%"><b>定时任务</b>缓存预热<span class="small">热门列表/首页</span></div>
+  </div>
+  <p class="small" style="margin-top:14px">关键点：BFF 与 PHP 之间走 <span class="mono">127.0.0.1</span> 回环，PHP 侧完全不感知新前端存在；BFF 是唯一的“翻译官”。</p>
+</div>
+
+<h3>三级取数策略（按风险从低到高，优先用低风险）</h3>
+<table>
+  <tr><th style="width:34px">级别</th><th style="width:150px">方式</th><th>适用</th><th style="width:120px">风险</th></tr>
+  <tr><td><b>L1</b></td><td>HTML 适配<br><span class="small">服务端 cheerio 解析原页面 → JSON</span></td><td><b>默认方案</b>：种子列表、详情、用户资料、论坛、排行、消息等绝大多数页面。业务逻辑 100% 沿用原实现，权限/可见性天然一致。</td><td class="ok">极低</td></tr>
+  <tr><td><b>L2</b></td><td>已有 JSON API<br><span class="small">routes/api.php + Sanctum</span></td><td>种子列表/详情/评论/收藏/用户资料——原程序已提供，直接复用，性能最好。</td><td class="ok">低</td></tr>
+  <tr><td><b>L3</b></td><td>只读 SQL<br><span class="small">独立只读账号，白名单表</span></td><td>仅用于高并发聚合（首页统计、Top10、做种/下载数），且必须带缓存。不用于任何有权限可见性差异的数据。</td><td>中</td></tr>
+</table>
+<div class="callout info">
+  写操作（登录、发种、编辑、感谢、评论、发信、签到、认领、积分兑换…）<b>一律不做重写</b>，由 BFF 以原样表单 POST 到 <span class="mono">take*.php</span>，再把结果翻译成 JSON 返回。这样管理员改规则、改校验，新前端自动跟上，不会出现“两套逻辑打架”。
+</div>
+
+<h2><span class="n">5</span>核心流程</h2>
+
+<h3>5.1 登录与会话（最容易被忽略、也最容易踩坑的一环）</h3>
+<div class="flow">
+  <div class="lane"><div class="tag">① 提交</div><div class="body">新版登录页 → <span class="mono">POST /api/auth/login</span> → BFF 以表单方式请求原站 <span class="mono">takelogin.php</span>（含两步验证码、密保问题等全部原字段）。</div></div>
+  <div class="lane"><div class="tag">② 判定</div><div class="body">BFF 读取响应：成功时原站会下发 <span class="mono">Set-Cookie</span> 会话；失败时从 HTML 里提取错误文案（密码错 / 未验证 / 被封禁 / 需两步验证）原样回传。</div></div>
+  <div class="lane"><div class="tag">③ 托管</div><div class="body">会话 Cookie <b>不下发到浏览器</b>，由 BFF 存服务端（Redis，key = 新版 sid），浏览器只拿新版 <span class="mono">HttpOnly</span> Cookie，安全性反而比现在好。</div></div>
+  <div class="lane"><div class="tag">④ 代理</div><div class="body">之后每个请求，BFF 用对应会话去请求原站，实现“一个浏览器会话 ↔ 一个 PHP 会话”的映射。退出登录则调用原站 <span class="mono">logout.php</span> 并销毁映射。</div></div>
+</div>
+
+<h3>5.2 种子列表 → 详情 → 下载（最高频路径）</h3>
+<div class="flow">
+  <div class="lane"><div class="tag">列表</div><div class="body"><span class="mono">GET /api/torrents?cat=&amp;team=&amp;incldead=&amp;search=&amp;page=</span> → 优先走 L2 接口，缺失字段由 L1 补齐 → 返回统一结构（封面、标题、分类、大小、做种/下载、完成数、促销标签、发布时间）。</div></div>
+  <div class="lane"><div class="tag">详情</div><div class="body"><span class="mono">GET /api/torrents/:id</span> → 基本信息、简介（清洗后 HTML）、文件列表、评论、做种/下载者、积分与促销状态、举报入口。</div></div>
+  <div class="lane"><div class="tag">下载</div><div class="body">下载按钮不直连 <span class="mono">download.php</span>（会暴露 passkey），而是 <span class="mono">GET /api/torrents/:id/download</span> → BFF 带会话取种子文件 → 以 <span class="mono">application/x-bittorrent</span> + 正确文件名流式回传。</div></div>
+  <div class="lane"><div class="tag">Tracker</div><div class="body"><span class="mono">announce.php</span> / <span class="mono">scrape</span> <b>完全不碰</b>，客户端仍走原地址，做种/下载链路零风险。</div></div>
+</div>
+
+<h3>5.3 发种与写操作</h3>
+<div class="flow">
+  <div class="lane"><div class="tag">上传</div><div class="body">新版分步表单（选分区 → 填元数据 → 传种子 → 选文件 → 提交）→ 拼成原站 <span class="mono">takeupload.php</span> 的字段（含 <span class="mono">nfo</span>、<span class="mono">descr</span>、<span class="mono">technical_info</span>、<span class="mono">mediainfo</span>、<span class="mono">source_sel</span>…）逐字段对齐 → 校验错误回显到对应步骤。</div></div>
+  <div class="lane"><div class="tag">写操作</div><div class="body">感谢 / 收藏 / 评论 / 举报 / 认领 / 兑换 / 签到 / 邀请 / 改密 —— 全部走代理，前端只负责交互与乐观更新。</div></div>
+  <div class="lane"><div class="tag">兜底</div><div class="body">代理失败或字段不兼容时，<b>降级为“跳转原站页面”</b>（新窗口打开旧版功能页），保证任何情况下功能都不会消失——这是“功能一个不少”的最终保险绳。</div></div>
+</div>
+
+<h2><span class="n">6</span>页面清单与路由映射（节选）</h2>
+<p class="small">完整 162 条入口已逐条归类（见同目录 <span class="mono">附录A-入口归属表.csv</span>，0 条未分类）。下表是分组与优先级：<span class="tagp p0">P0</span>第一版必须上线，<span class="tagp p1">P1</span>第二迭代，<span class="tagp p2">P2</span>低频/可保留旧版。</p>
+<table>
+  <tr><th style="width:96px">模块</th><th style="width:240px">新前端路由</th><th>承载的原站页面</th><th style="width:78px">优先级</th></tr>
+  <tr><td>登录注册</td><td class="mono">/login /signup /recover</td><td>login、takelogin、signup、takesignup、recover、reset、confirm、confirmemail、self-enable、maxlogin</td><td><span class="tagp p0">P0</span></td></tr>
+  <tr><td>首页</td><td class="mono">/</td><td>index、news、shoutbox、polloverview</td><td><span class="tagp p0">P0</span></td></tr>
+  <tr><td>种子列表</td><td class="mono">/torrents</td><td>torrents、search、searchsuggest、freeleech、bookmark</td><td><span class="tagp p0">P0</span></td></tr>
+  <tr><td>种子详情</td><td class="mono">/torrents/:id</td><td>details、viewfilelist、viewnfo、viewpeerlist、viewsnatches、comment、thanks、report、download、downloadsubs、torrent_info</td><td><span class="tagp p0">P0</span></td></tr>
+  <tr><td>发布</td><td class="mono">/upload</td><td>upload、takeupload、takeedit、edit</td><td><span class="tagp p0">P0</span></td></tr>
+  <tr><td>个人中心</td><td class="mono">/me /me/:tab</td><td>usercp、userdetails、mybonus、bonus-log、attendance、myhr、invite、friends、getusertorrentlistajax、userhistory、medal、tags、warned、nowarn</td><td><span class="tagp p0">P0</span></td></tr>
+  <tr><td>站内信</td><td class="mono">/messages</td><td>messages、sendmessage、takemessage、deletemessage、staffmess</td><td><span class="tagp p0">P0</span></td></tr>
+  <tr><td>论坛</td><td class="mono">/forums /topics/:id</td><td>forums、moforums、forummanage、makepoll、polloverview</td><td><span class="tagp p1">P1</span></td></tr>
+  <tr><td>用户</td><td class="mono">/users /users/:id</td><td>users、usersearch、uploaders、donorlist、userdetails</td><td><span class="tagp p1">P1</span></td></tr>
+  <tr><td>排行统计</td><td class="mono">/topten /stats</td><td>topten、stats、special、fun</td><td><span class="tagp p1">P1</span></td></tr>
+  <tr><td>站点页面</td><td class="mono">/rules /faq /about /links</td><td>rules、faq、faqactions、aboutnexus、useragreement、linksmanage、promotionlink、contactstaff</td><td><span class="tagp p1">P1</span></td></tr>
+  <tr><td>管理后台</td><td class="mono">/nexusphp</td><td colspan="2"><b>保持原状</b>（Filament 已现代化），新前台仅在导航放一个入口</td></tr>
+  <tr><td>管理类页面</td><td class="mono">跳转 /nexusphp</td><td>settings、catmanage、bans、cheaters、log、ipsearch、massmail、modtask、staffpanel… 约 45 个 staff 页面</td><td><span class="tagp p2">P2</span></td></tr>
+  <tr><td>系统/接口</td><td class="mono">原样保留</td><td>announce、scrape、cron、ajax、image、getrss、torrentrss、opensearch、take*（由 BFF 内部调用）</td><td colspan="1"><span class="tagp p2">不动</span></td></tr>
+</table>
+
+<h2><span class="n">7</span>实施路线（三个阶段，每阶段有验收物）</h2>
+<table>
+  <tr><th style="width:80px">阶段</th><th style="width:180px">产出</th><th>内容</th><th style="width:190px">你要验收什么</th></tr>
+  <tr>
+    <td><b>P1 流程</b><br><span class="small">本次</span></td>
+    <td>本方案 +<br>页面清单 +<br>可点击线框</td>
+    <td>架构定稿、取数策略定稿、162 入口归属表、核心流程走查、线框原型（灰模，能点通主要路径）</td>
+    <td>流程是否顺、功能有没有漏、优先级排得对不对</td>
+  </tr>
+  <tr>
+    <td><b>P2 效果</b></td>
+    <td>高保真设计稿 +<br>真实数据预览站</td>
+    <td>设计系统（色板/字号/栅格/组件）、12 个核心页面高保真、用真实数据（554 个种子）跑起来的预览环境、暗/亮双主题</td>
+    <td>好不好看、信息密度是否合适、手机上是否好用</td>
+  </tr>
+  <tr>
+    <td><b>P3 上线</b></td>
+    <td>线上可访问的新前台</td>
+    <td>BFF 容器化部署、openresty 加 <span class="mono">/v2</span> 路由、灰度放量、全功能回归（对照 162 入口）、性能压测、回滚演练</td>
+    <td><b>功能是否一个不少</b>、速度、回滚是否真的 10 秒内</td>
+  </tr>
+</table>
+
+<h3>P3 上线检查表（先立规矩，避免上线当天扯皮）</h3>
+<ul>
+  <li>162 个入口逐条打勾：新前端承接 / 跳转旧版 / 后台承接，三选一，不允许留空。</li>
+  <li>下载链路单独回归：种子能下、能校验、Tracker 正常回报、做种数正常增长。</li>
+  <li>写操作回归：发种（含候选区）、编辑、感谢、评论、收藏、举报、发信、签到、兑换各一次。</li>
+  <li>会话回归：登录保持、记住我、两步验证、被禁用账号提示、退出后旧 Cookie 失效。</li>
+  <li>回滚演练：把 <span class="mono">/</span> 切回旧站，确认 10 秒内恢复且数据无异常。</li>
+</ul>
+
+<h2><span class="n">8</span>风险与对策</h2>
+<table>
+  <tr><th style="width:200px">风险</th><th style="width:70px">概率</th><th>对策</th></tr>
+  <tr><td>HTML 解析随原站升级失效</td><td>中</td><td>解析规则与页面结构解耦（选择器集中管理 + 单元测试快照）；原站只读挂载，不会被动升级；异常自动降级为跳转旧页并告警。</td></tr>
+  <tr><td>写操作字段不兼容</td><td>中</td><td>先用 1:1 字段镜像，逐项对齐；预留“跳转旧页”兜底；上线前用测试账号跑一遍全量写操作。</td></tr>
+  <tr><td>性能反而不如旧站</td><td>低</td><td>Redis 缓存 + 列表接口合并请求 + 静态资源 CDN 化；目标：首屏 &lt; 1.5s，列表接口 P95 &lt; 300ms。</td></tr>
+  <tr><td>双份会话被风控/踢下线</td><td>低</td><td>不做双登录；BFF 复用同一 PHP 会话；同时在线设备数与原逻辑一致。</td></tr>
+  <tr><td>改到原站代码</td><td>低</td><td>只读挂载 <span class="mono">:ro</span>，物理隔离。</td></tr>
+</table>
+
+<h2><span class="n">9</span>下一步需要你定的三件事</h2>
+<div class="grid g3">
+  <div class="card"><h4>① 管理员密码</h4><p>补充完整的 admin 密码（现在是 <span class="mono">Xi....377</span>），用于登录抓取真实页面，做像素级对比与功能清点。</p></div>
+  <div class="card"><h4>② 入口方式</h4><p>新前台放哪：<span class="mono">/v2</span> 子路径（最省事，推荐）、独立端口如 <span class="mono">:8080</span>、还是新域名？</p></div>
+  <div class="card"><h4>③ 视觉方向</h4><p>深色影院风（海报流，PT 主流）、浅色清爽风、还是深色默认 + 可切浅色？P2 开始前定。</p></div>
+</div>
+
+<div class="foot">
+  太乙 TEY · 前台重构方案 v1.0 · 第一阶段（流程）· 编制于 2026-11-03<br>
+  勘察方式：SSH 只读盘点 + 数据库只读查询 + 未登录页面截图；未对原站做任何写入。
+</div>
+
+</div>
+</body>
+</html>

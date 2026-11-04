@@ -1,0 +1,16 @@
+appname="those"
+version="1.0.0"
+display_name="Those"
+desc="Those PT 站客户端：海报墙浏览、种子检索、收藏与促销标识。安装后首次打开需填入站点 API 令牌。"
+platform="x86"
+source="thirdparty"
+
+maintainer="Those"
+maintainer_url="https://those.cc"
+distributor="zhangxx"
+
+service_port="8790"
+checkport="false"
+
+desktop_uidir="ui"
+desktop_applaunchname="those.Application"

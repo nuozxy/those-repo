@@ -1,0 +1,37 @@
+#!/bin/bash
+# 把静态前端与 nginx 配置同步到应用数据目录（${TRIM_PKGVAR}），
+# 容器只挂载这个目录，避免依赖不确定的包安装路径变量。
+set -u
+
+DEST="${TRIM_PKGVAR:-}"
+if [ -z "$DEST" ]; then
+    echo "sync_web: TRIM_PKGVAR 未设置，跳过同步" >&2
+    exit 1
+fi
+
+ROOT="$(cd "$(dirname "$0")/.." 2>/dev/null && pwd)"
+SRC=""
+BASE=""
+for cand in "${TRIM_APPDEST:-}" "$ROOT/app" "$ROOT" "$ROOT/target/app" "$ROOT/target"; do
+    if [ -n "$cand" ] && [ -d "$cand/web" ] && [ -f "$cand/web/index.html" ]; then
+        SRC="$cand/web"
+        BASE="$cand"
+        break
+    fi
+done
+
+if [ -z "$SRC" ]; then
+    echo "sync_web: 未找到 web 目录（尝试过 TRIM_APPDEST / $ROOT）" >&2
+    exit 1
+fi
+
+mkdir -p "$DEST/web" "$DEST/conf"
+rm -rf "$DEST/web"/*
+cp -a "$SRC"/. "$DEST/web"/
+
+if [ -f "$BASE/docker/nginx.conf" ]; then
+    cp -a "$BASE/docker/nginx.conf" "$DEST/conf/nginx.conf"
+fi
+
+echo "sync_web: 已同步 $(find "$DEST/web" -type f | wc -l) 个文件到 $DEST/web"
+exit 0

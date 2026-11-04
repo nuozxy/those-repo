@@ -1,0 +1,47 @@
+# 封面代理 · nginx 纯反代片段（没有 PHP 时的降级方案）
+#
+# 作用：替浏览器带上 Referer 去取豆瓣等图床的图，解决 418 防盗链。
+# 局限：不能做 ?q=片名补图（要解析 JSON，nginx 不行），补图那步前端会自动跳过。
+#
+# 用法：
+#   1) http {} 级加一行缓存目录（1Panel：/usr/local/openresty/nginx/conf/nginx.conf）
+#   2) 下面 location 粘到站点 server {} 里
+#   3) 前端 coverProxy 填 https://你的域名/img?f=0
+
+# ---- http {} 级 ----
+# proxy_cache_path /www/cache/img levels=1:2 keys_zone=imgcache:32m max_size=2g inactive=30d use_temp_path=off;
+
+# ---- server {} 级 ----
+location = /img {
+    # 只放行常见图床，避免被拿去当开放代理打别的站
+    if ($arg_u !~ "^https?://([a-z0-9_-]+\.)*(doubanio\.com|douban\.com|hhanclub\.net|ptpimg\.me|netok\.xyz|helloimg\.com|twimg\.com|themoviedb\.org|tmdb\.org|tvmaze\.com)/") {
+        return 403;
+    }
+
+    resolver 223.5.5.5 119.29.29.29 valid=300s ipv6=off;
+    resolver_timeout 5s;
+
+    proxy_pass $arg_u;
+    proxy_ssl_server_name on;
+    proxy_set_header Host $proxy_host;
+    # 关键：豆瓣认这个 Referer，其它图床一般不校验，带了也无害
+    proxy_set_header Referer "https://movie.douban.com/";
+    proxy_set_header User-Agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36";
+    proxy_set_header Accept "image/avif,image/webp,image/*,*/*;q=0.8";
+
+    proxy_connect_timeout 5s;
+    proxy_read_timeout 15s;
+    proxy_follow_redirects on;
+    proxy_max_temp_file_size 8m;
+
+    proxy_cache imgcache;
+    proxy_cache_key "$arg_u";
+    proxy_cache_valid 200 7d;
+    proxy_cache_valid 404 30m;
+    proxy_cache_use_stale error timeout http_500 http_502 http_503 http_504;
+    proxy_ignore_headers Cache-Control Expires Set-Cookie;
+
+    add_header X-Img-Cache $upstream_cache_status;
+    add_header Cache-Control "public, max-age=604800";
+    add_header Access-Control-Allow-Origin "*" always;
+}

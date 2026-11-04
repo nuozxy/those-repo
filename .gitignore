@@ -1,0 +1,23 @@
+# 依赖与产物
+node_modules/
+dist/
+dist-ssr/
+.vite/
+
+# 本地环境变量（含令牌，绝不提交）
+.env
+.env.local
+.env.*.local
+
+# 构建/交付产物
+*.tar.gz
+*.fpk
+fnos/app/web/
+
+# 日志与缓存
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc

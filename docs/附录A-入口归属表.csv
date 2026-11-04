@@ -1,0 +1,163 @@
+﻿原站文件,模块,新前端路由/去向,归属方式,优先级
+aboutnexus.php,站点页面,/about,新前端重做,P1
+adduser.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+admanage.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+adredir.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+ajax.php,系统内部,不动（内部 AJAX）,不动（原样保留）,不动
+allagents.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+allowedemails.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+amountattendancecard.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+amountbonus.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+amountupload.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+announce.php,种子,不动（Tracker）,不动（Tracker）,不动
+attachment.php,种子,/api/attachment,新前端重做,P0
+attendance.php,用户中心,/api/attendance,新前端重做,P0
+bannedemails.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+bans.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+bitbucket-upload.php,用户中心,/bitbucket/upload,新前端重做,P2
+bitbucketlog.php,用户中心,/bitbucket,新前端重做,P2
+bonus-log.php,用户中心,/me?tab=bonus-log,新前端重做,P0
+bookmark.php,种子,/me?tab=bookmarks,新前端重做,P0
+catmanage.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+cc98bar.php,站点页面,不动（内部）,新前端重做,P1
+cheaterbox.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+cheaters.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+checkuser.php,登录注册,/api/auth/check-user,新前端重做,P0
+claim.php,种子,/api/claim,新前端重做,P0
+clearcache.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+comment.php,种子,/api/torrents/:id/comments,新前端重做,P0
+complains.php,论坛社区,/complains,新前端重做,P1
+confirm.php,登录注册,/confirm,新前端重做,P0
+confirm_resend.php,登录注册,/api/auth/resend,新前端重做,P0
+confirmemail.php,登录注册,/confirm-email,新前端重做,P0
+contactstaff.php,论坛社区,/contact,新前端重做,P1
+cron.php,系统内部,不动（定时任务）,不动（原样保留）,不动
+delacctadmin.php,用户中心,/me?tab=security,新前端重做,P1
+delete.php,种子,/api/torrents/:id/delete,新前端重做,P1
+deletedisabled.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+deletemessage.php,用户中心,/api/messages/delete,新前端重做,P0
+details.php,种子,/torrents/:id,新前端重做,P0
+docleanup.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+donate.php,统计排行,/donate,新前端重做,P2
+donated.php,统计排行,/donate?tab=history,新前端重做,P2
+donorlist.php,统计排行,/donate,新前端重做,P2
+download.php,种子,/api/torrents/:id/download,新前端重做,P0
+downloadnotice.php,种子,/torrents/:id 提示条,新前端重做,P1
+downloadsubs.php,种子,/torrents/:id 字幕,新前端重做,P0
+edit.php,种子,/torrents/:id/edit,新前端重做,P0
+email-gateway.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+faq.php,站点页面,/faq,新前端重做,P1
+faqactions.php,站点页面,/faq,新前端重做,P1
+faqmanage.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+fastdelete.php,种子,/api/torrents/:id/delete,新前端重做,P1
+fields.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+formats.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+forummanage.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+forums.php,论坛社区,/forums,新前端重做,P1
+freeleech.php,种子,/torrents?free=1,新前端重做,P0
+friends.php,用户中心,/me?tab=friends,新前端重做,P1
+fun.php,论坛社区,/fun,新前端重做,P2
+getattachment.php,种子,不动（内部资源）,新前端重做,P1
+getextinfoajax.php,系统内部,不动（内部）,不动（原样保留）,不动
+getrss.php,种子,/rss（保留原地址）,新前端重做,P1
+getusertorrentlistajax.php,用户中心,/api/me/torrents,新前端重做,P1
+image.php,系统内部,不动（图像处理）,不动（原样保留）,不动
+increment-bulk.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+index.php,站点页面,/,新前端重做,P0
+invite.php,用户中心,/me?tab=invite,新前端重做,P0
+ipcheck.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+iphistory.php,用户中心,/me?tab=ip,新前端重做,P1
+ipsearch.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+linksmanage.php,站点页面,/links,新前端重做,P1
+location.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+log.php,用户中心,/me?tab=log,新前端重做,P1
+login.php,登录注册,/login,新前端重做,P0
+logout.php,登录注册,/api/auth/logout,新前端重做,P0
+magic.php,用户中心,/me?tab=magic（道具）,新前端重做,P2
+mailtest.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+makepoll.php,论坛社区,/api/polls/create,新前端重做,P1
+massmail.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+maxlogin.php,登录注册,/login,新前端重做,P0
+medal.php,用户中心,/me?tab=medals,新前端重做,P0
+messages.php,用户中心,/messages,新前端重做,P0
+modrules.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+modtask.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+moforums.php,论坛社区,/api/forums/mod,新前端重做,P1
+moresmilies.php,站点页面,/api/smilies,新前端重做,P1
+mybar.php,站点页面,不动（内部）,新前端重做,P1
+mybonus.php,用户中心,/me?tab=bonus,新前端重做,P0
+myhr.php,用户中心,/me?tab=hr,新前端重做,P0
+mysql_stats.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+news.php,论坛社区,/news,新前端重做,P0
+nexus.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+nowarn.php,用户中心,/api/warned/ack,新前端重做,P1
+offers.php,论坛社区,/offers,新前端重做,P1
+ok.php,站点页面,内部跳转页,新前端重做,P2
+opensearch.php,站点页面,不动（浏览器搜索）,新前端重做,P1
+page.php,站点页面,/page/:slug,新前端重做,P2
+polloverview.php,论坛社区,/,新前端重做,P0
+preview.php,种子,/torrents/:id 预览,新前端重做,P0
+promotionlink.php,站点页面,/promotion,新前端重做,P1
+recover.php,登录注册,/recover,新前端重做,P0
+report.php,种子,/api/report,新前端重做,P0
+reports.php,论坛社区,/reports,新前端重做,P1
+reset.php,登录注册,/reset,新前端重做,P0
+retriver.php,站点页面,不动（内部）,新前端重做,P1
+rules.php,站点页面,/rules,新前端重做,P1
+scrape.php,种子,不动（Tracker）,不动（Tracker）,不动
+search.php,种子,/torrents?q=,新前端重做,P0
+searchsuggest.php,种子,/api/search/suggest,新前端重做,P0
+self-enable.php,登录注册,/self-enable,新前端重做,P0
+sendmessage.php,用户中心,/api/messages,新前端重做,P0
+settings.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+shoutbox.php,论坛社区,/ 侧栏 shoutbox,新前端重做,P0
+signup.php,登录注册,/signup,新前端重做,P0
+smilies.php,站点页面,/api/smilies,新前端重做,P1
+special.php,统计排行,/special,新前端重做,P2
+staff.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+staffbox.php,论坛社区,/staffbox,新前端重做,P1
+staffmess.php,论坛社区,/api/staff-message,新前端重做,P1
+staffpanel.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+stats.php,统计排行,/stats,新前端重做,P2
+subtitles.php,站点页面,/subtitles,新前端重做,P2
+suggest.php,论坛社区,/suggest,新前端重做,P1
+tags.php,用户中心,/me?tab=tags,新前端重做,P1
+take-increment-bulk.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+takeamountupload.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+takeconfirm.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+takecontact.php,论坛社区,/api/contact,新前端重做,P1
+takeedit.php,种子,/api/torrents/:id/edit,新前端重做,P0
+takeflush.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+takeinvite.php,用户中心,/api/invite,新前端重做,P1
+takelogin.php,登录注册,/api/auth/login,新前端重做,P0
+takemessage.php,用户中心,/api/messages,新前端重做,P0
+takereseed.php,管理后台,/api/reseed,跳转 /nexusphp,P2（后台承接）
+takesignup.php,登录注册,/api/auth/signup,新前端重做,P0
+takestaffmess.php,论坛社区,/api/staff-message,新前端重做,P1
+takeupdate.php,管理后台,/api/profile/update,跳转 /nexusphp,P2（后台承接）
+takeupload.php,种子,/api/upload,新前端重做,P0
+task.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+test.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+testip.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+thanks.php,种子,/api/torrents/:id/thanks,新前端重做,P0
+topten.php,统计排行,/topten,新前端重做,P2
+torrent_info.php,种子,/torrents/:id?tab=info,新前端重做,P1
+torrentrss.php,种子,/rss（保留原地址）,新前端重做,P1
+torrents.php,种子,/torrents,新前端重做,P0
+unco.php,种子,/api/report,新前端重做,P1
+upload.php,种子,/upload,新前端重做,P0
+uploaders.php,统计排行,/topten?type=uploaders,新前端重做,P2
+user-ban-log.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+useragreement.php,站点页面,/agreement,新前端重做,P1
+usercp.php,用户中心,/me,新前端重做,P0
+userdetails.php,用户中心,/users/:id,新前端重做,P0
+userhistory.php,用户中心,/me?tab=history,新前端重做,P1
+users.php,用户中心,/users,新前端重做,P1
+usersearch.php,用户中心,/users?q=,新前端重做,P1
+videoformats.php,管理后台,后台 /nexusphp,跳转 /nexusphp,P2（后台承接）
+viewfilelist.php,种子,/torrents/:id?tab=files,新前端重做,P0
+viewnfo.php,种子,/torrents/:id?tab=nfo,新前端重做,P0
+viewpeerlist.php,种子,/torrents/:id?tab=peers,新前端重做,P0
+viewrequests.php,论坛社区,/requests,新前端重做,P2
+viewsnatches.php,种子,/torrents/:id?tab=snatches,新前端重做,P0
+warned.php,用户中心,/me?tab=warned,新前端重做,P1

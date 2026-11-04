@@ -1,0 +1,12 @@
+services:
+  those:
+    image: ${DOCKER_MIRROR:-}docker.io/library/nginx:1.27-alpine
+    container_name: those
+    ports:
+      - "${TRIM_SERVICE_PORT:-8790}:80"
+    volumes:
+      - ${TRIM_PKGVAR:-/var/apps/those/var}/web:/usr/share/nginx/html:ro
+      - ${TRIM_PKGVAR:-/var/apps/those/var}/conf/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped
