@@ -92,20 +92,42 @@ nginx 需要 SPA 路由回退（`try_files $uri $uri/ /index.html;`），参考 
 
 ## 飞牛 fnOS 应用
 
-`fnos/` 是可直接用 [fnpack](https://developer.fnnas.com/docs/) 打包的应用工程（docker-project 类型，nginx 容器 + 静态产物）：
+`fnos/` 是可直接用 [fnpack](https://developer.fnnas.com/docs/) 打包的应用工程（docker-project 类型，nginx 容器 + 静态产物）。
+
+### 一键出包
 
 ```bash
-# 1. 先构建前端产物
-cd api-ui && npm run build && cd ..
+# Windows：双击 build-fpk.cmd（或在任意终端）
+bash fnos/build-fpk.sh
 
-# 2. 复制产物进 fnOS 工程
-mkdir -p fnos/app/web && cp -r api-ui/dist/* fnos/app/web/
-
-# 3. 打包（fnpack 从 static2.fnnas.com 下载对应平台版本）
-fnpack build -d fnos        # 产出 fnos.fpk
+# 常用参数
+bash fnos/build-fpk.sh --skip-web        # 复用 api-ui/dist，跳过 npm 构建
+bash fnos/build-fpk.sh --version 1.0.1   # 改版本号（写回 manifest）
+bash fnos/build-fpk.sh --out D:/dist     # 指定产物目录
 ```
 
+一条命令完成：`npm ci` + 构建 → 复制产物进 `fnos/app/web` → 生成站点用的 `config.js` → 复用或自动下载 fnpack → 打包 → 输出 `out/those-fnos-<版本>.fpk`。
+
+打包前可用环境变量覆盖预置配置，不必改代码：
+
+```bash
+API_BASE=https://your.site/api/v1 \
+COVER_PROXY=https://img.your.site/img?f=0 \
+SITE_ID=yoursite SITE_NAME=YourSite \
+bash fnos/build-fpk.sh
+```
+
+| 变量 | 默认值 |
+|---|---|
+| `API_BASE` | `https://those.cc/api/v1` |
+| `COVER_PROXY` | `https://img.those.cc/img?f=0` |
+| `SITE_ID` / `SITE_NAME` | `those` / `Those` |
+| `FNPACK` | 未指定时自动下载 1.2.3 到 `fnos/.tools/` |
+| `NPM` | 自动探测 |
+
 安装时应用中心「手动安装」上传 `.fpk` 即可，默认端口 `8790`，安装/升级回调会把静态文件同步到应用数据目录，再由 nginx 容器挂载。
+
+> 首次启动需要拉取 `nginx:1.27-alpine` 镜像，国内环境建议先在飞牛 Docker 设置里配置镜像加速。
 
 ## 说明
 

@@ -13,6 +13,8 @@ dist-ssr/
 *.tar.gz
 *.fpk
 fnos/app/web/
+fnos/.tools/
+out/
 
 # 日志与缓存
 *.log
